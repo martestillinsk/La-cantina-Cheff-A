@@ -1,0 +1,24 @@
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-3">
+  <a class="navbar-brand fs-5 fw-bold text-danger text-decoration-none" href="../index.html">
+    <i class="bi bi-cup-hot-fill me-2"></i>La Cantina Cheff
+  </a>
+  <div class="ms-auto d-flex align-items-center gap-3">
+    <span class="text-muted small"><i class="bi bi-person-circle me-1"></i>Administrador</span>
+    <a href="login.html" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Sair</a>
+  </div>
+</nav>
+<!-- SIDEBAR -->
+<div class="sidebar p-3" style="width:220px; min-width:220px; background:#2c2c2c; min-height:100vh;">
+  <ul class="nav flex-column mt-2">
+    <li class="nav-item"><a class="nav-link text-white-50" href="../index.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link text-white-50" href="pedidos.html"><i class="bi bi-receipt me-2"></i>Pedidos</a></li>
+    <li class="nav-item"><a class="nav-link text-white-50" href="produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a></li>
+    <li class="nav-item"><a class="nav-link text-white-50" href="estoque.html"><i class="bi bi-archive me-2"></i>Estoque</a></li>
+    <li class="nav-item"><a class="nav-link text-white-50" href="relatorios.html"><i class="bi bi-bar-chart-line me-2"></i>Relatórios</a></li>
+    <hr class="border-secondary">
+    <li class="nav-item"><a class="nav-link text-white-50" href="perfil.html"><i class="bi bi-person me-2"></i>Perfil</a></li>
+    <li class="nav-item"><a class="nav-link text-white-50" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+    <li class="nav-item"><a class="nav-link text-white-50" href="faq.html"><i class="bi bi-question-circle me-2"></i>FAQ</a></li>
+  </ul>
+</div>

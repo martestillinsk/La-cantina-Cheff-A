@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Cantina Cheff – Pedidos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/adminlte.min.css">
+  <style>
+    .sidebar .nav-link { color: #ccc; border-radius: 6px; margin: 2px 8px; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #c0392b; color: #fff; }
+  </style>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-3">
+  <a class="navbar-brand fs-5 fw-bold text-danger text-decoration-none" href="../index.html">
+    <i class="bi bi-cup-hot-fill me-2"></i>La Cantina Cheff
+  </a>
+  <div class="ms-auto d-flex align-items-center gap-3">
+    <span class="text-muted small"><i class="bi bi-person-circle me-1"></i>Administrador</span>
+    <a href="login.html" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Sair</a>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <div class="sidebar p-3" style="width:220px; min-width:220px; background:#2c2c2c; min-height:100vh;">
+    <ul class="nav flex-column mt-2">
+      <li class="nav-item"><a class="nav-link" href="../index.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link active" href="pedidos.html"><i class="bi bi-receipt me-2"></i>Pedidos</a></li>
+      <li class="nav-item"><a class="nav-link" href="produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a></li>
+      <li class="nav-item"><a class="nav-link" href="estoque.html"><i class="bi bi-archive me-2"></i>Estoque</a></li>
+      <li class="nav-item"><a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart-line me-2"></i>Relatórios</a></li>
+      <hr class="border-secondary">
+      <li class="nav-item"><a class="nav-link" href="perfil.html"><i class="bi bi-person me-2"></i>Perfil</a></li>
+      <li class="nav-item"><a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+      <li class="nav-item"><a class="nav-link" href="faq.html"><i class="bi bi-question-circle me-2"></i>FAQ</a></li>
+    </ul>
+  </div>
+
+  <div class="flex-grow-1 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold text-secondary mb-0">Pedidos</h5>
+      <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalNovoPedido">
+        <i class="bi bi-plus-lg me-1"></i>Novo Pedido
+      </button>
+    </div>
+
+   <!-- Filtro -->
+<div class="card shadow-sm mb-3">
+  <div class="card-body py-2">
+    <div class="row g-2 align-items-center">
+      <div class="col-md-4">
+        <input type="text" id="campoPesquisaPedido" class="form-control form-control-sm" placeholder="Pesquisar por nome do produto ou ID...">
+      </div>
+      <div class="col-md-3">
+        <input type="date" id="dataFiltro" class="form-control form-control-sm">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-sm btn-outline-danger w-100" onclick="pesquisarPedido()">
+          <i class="bi bi-search me-1"></i>Filtrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-3">ID</th>
+              <th>Produto(s)</th>
+              <th>Quantidade</th>
+              <th>Valor Total</th>
+              <th>Data</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                <i class="bi bi-receipt fs-2 opacity-25"></i>
+                <div class="mt-2">Nenhum pedido registrado</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Novo Pedido -->
+<div class="modal fade" id="modalNovoPedido" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h6 class="modal-title fw-bold"><i class="bi bi-receipt me-2 text-danger"></i>Novo Pedido</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Produto</label>
+          <select id="produto_id" class="form-select" onchange="calcularTotal()">
+            <option value="">Selecione um produto...</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Quantidade</label>
+          <input type="number" id="quantidade_pedido" class="form-control" min="1" value="1" onchange="calcularTotal()">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Valor Total</label>
+          <input type="text" id="valor_total" class="form-control" placeholder="R$ 0,00" readonly>
+        </div>
+        <div class="alert alert-danger d-none" id="alertaEstoque">
+          <i class="bi bi-exclamation-triangle me-2"></i>Produto sem estoque disponível!
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="registrarPedido()">
+          <i class="bi bi-check-lg me-1"></i>Registrar Pedido
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/adminlte.min.js"></script>
+
+<script>
+  // Armazena os produtos para calcular o total
+  let listaProdutos = []
+
+  // Carrega os pedidos na tabela
+  function carregarPedidos() {
+    fetch("http://localhost:5000/pedidos")
+      .then(resposta => resposta.json())
+      .then(pedidos => {
+
+        const tbody = document.querySelector("tbody")
+
+        if (pedidos.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                <i class="bi bi-receipt fs-2 opacity-25"></i>
+                <div class="mt-2">Nenhum pedido registrado</div>
+              </td>
+            </tr>`
+          return
+        }
+
+        tbody.innerHTML = ""
+        pedidos.forEach(pedido => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${pedido.id}</td>
+              <td>${pedido.nome}</td>
+              <td>${pedido.quantidade}</td>
+              <td>R$ ${pedido.valor_total.toFixed(2)}</td>
+              <td>${pedido.criado_em}</td>
+              <td>
+                <button class="btn btn-sm btn-danger" onclick="cancelarPedido(${pedido.id})">Cancelar</button>
+              </td>
+            </tr>`
+        })
+      })
+  }
+
+  // Carrega os produtos no select do modal
+  function carregarProdutosNoSelect() {
+    fetch("http://localhost:5000/produtos")
+      .then(resposta => resposta.json())
+      .then(produtos => {
+        listaProdutos = produtos
+        const select = document.getElementById("produto_id")
+        select.innerHTML = `<option value="">Selecione um produto...</option>`
+        produtos.forEach(produto => {
+          select.innerHTML += `
+            <option value="${produto.id}" data-preco="${produto.preco}" data-estoque="${produto.quantidade}">
+              ${produto.nome} — R$ ${produto.preco.toFixed(2)} (Estoque: ${produto.quantidade})
+            </option>`
+        })
+      })
+  }
+
+  // Calcula o valor total automaticamente
+  function calcularTotal() {
+    const select    = document.getElementById("produto_id")
+    const quantidade = parseInt(document.getElementById("quantidade_pedido").value) || 0
+    const opcao     = select.options[select.selectedIndex]
+    const alerta    = document.getElementById("alertaEstoque")
+
+    if (!opcao.value) {
+      document.getElementById("valor_total").value = "R$ 0,00"
+      return
+    }
+
+    const preco   = parseFloat(opcao.dataset.preco)
+    const estoque = parseInt(opcao.dataset.estoque)
+
+    // Mostra alerta se quantidade for maior que o estoque
+    if (quantidade > estoque) {
+      alerta.classList.remove("d-none")
+    } else {
+      alerta.classList.add("d-none")
+    }
+
+    const total = preco * quantidade
+    document.getElementById("valor_total").value = `R$ ${total.toFixed(2)}`
+  }
+
+  // Registrar pedido
+  function registrarPedido() {
+    const produto_id = document.getElementById("produto_id").value
+    const quantidade = parseInt(document.getElementById("quantidade_pedido").value)
+
+    if (!produto_id) {
+      alert("Selecione um produto!")
+      return
+    }
+
+    if (!quantidade || quantidade <= 0) {
+      alert("Informe uma quantidade válida!")
+      return
+    }
+
+    fetch("http://localhost:5000/pedidos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ produto_id, quantidade })
+    })
+    .then(resposta => resposta.json())
+    .then(dados => {
+      if (dados.erro) {
+        alert(dados.erro)
+        return
+      }
+      alert(`Pedido registrado! Total: R$ ${dados.valor_total.toFixed(2)}`)
+      carregarPedidos()
+      carregarProdutosNoSelect()  // atualiza o estoque no select
+    })
+  }
+
+  // Cancelar pedido
+  function cancelarPedido(id) {
+    if (!confirm("Tem certeza que deseja cancelar este pedido?")) {
+      return
+    }
+
+    fetch(`http://localhost:5000/pedidos/${id}`, {
+      method: "DELETE"
+    })
+    .then(resposta => resposta.json())
+    .then(dados => {
+      alert(dados.mensagem)
+      carregarPedidos()
+    })
+  }
+
+  // Pesquisar pedido por nome do produto, ID ou data
+  function pesquisarPedido() {
+    const busca = document.getElementById("campoPesquisaPedido").value.toLowerCase()
+    const data  = document.getElementById("dataFiltro").value
+
+    fetch("http://localhost:5000/pedidos")
+      .then(resposta => resposta.json())
+      .then(pedidos => {
+
+        let filtrados = pedidos
+
+        // Filtra por nome do produto ou ID
+        if (busca) {
+          filtrados = filtrados.filter(p =>
+            p.nome.toLowerCase().includes(busca) ||
+            p.id.toString().includes(busca)
+          )
+        }
+
+        // Filtra por data
+        if (data) {
+          filtrados = filtrados.filter(p =>
+            p.criado_em && p.criado_em.startsWith(data)
+          )
+        }
+
+        const tbody = document.querySelector("tbody")
+
+        if (filtrados.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                Nenhum pedido encontrado
+              </td>
+            </tr>`
+          return
+        }
+
+        tbody.innerHTML = ""
+        filtrados.forEach(pedido => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${pedido.id}</td>
+              <td>${pedido.nome}</td>
+              <td>${pedido.quantidade}</td>
+              <td>R$ ${pedido.valor_total.toFixed(2)}</td>
+              <td>${pedido.criado_em}</td>
+              <td>
+                <button class="btn btn-sm btn-danger" onclick="cancelarPedido(${pedido.id})">Cancelar</button>
+              </td>
+            </tr>`
+        })
+      })
+  }
+
+  // Carrega tudo quando a página abrir
+  carregarPedidos()
+  carregarProdutosNoSelect()
+</script>
+
+</body>
+</html>

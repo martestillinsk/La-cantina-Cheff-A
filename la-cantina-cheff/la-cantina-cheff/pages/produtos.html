@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Cantina Cheff – Produtos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/adminlte.min.css">
+  <style>
+    .sidebar .nav-link { color: #ccc; border-radius: 6px; margin: 2px 8px; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #c0392b; color: #fff; }
+  </style>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-3">
+  <a class="navbar-brand fs-5 fw-bold text-danger text-decoration-none" href="../index.html">
+    <i class="bi bi-cup-hot-fill me-2"></i>La Cantina Cheff
+  </a>
+  <div class="ms-auto d-flex align-items-center gap-3">
+    <span class="text-muted small"><i class="bi bi-person-circle me-1"></i>Administrador</span>
+    <a href="login.html" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Sair</a>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <div class="sidebar p-3" style="width:220px; min-width:220px; background:#2c2c2c; min-height:100vh;">
+    <ul class="nav flex-column mt-2">
+      <li class="nav-item"><a class="nav-link" href="../index.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="pedidos.html"><i class="bi bi-receipt me-2"></i>Pedidos</a></li>
+      <li class="nav-item"><a class="nav-link active" href="produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a></li>
+      <li class="nav-item"><a class="nav-link" href="estoque.html"><i class="bi bi-archive me-2"></i>Estoque</a></li>
+      <li class="nav-item"><a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart-line me-2"></i>Relatórios</a></li>
+      <hr class="border-secondary">
+      <li class="nav-item"><a class="nav-link" href="perfil.html"><i class="bi bi-person me-2"></i>Perfil</a></li>
+      <li class="nav-item"><a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+      <li class="nav-item"><a class="nav-link" href="faq.html"><i class="bi bi-question-circle me-2"></i>FAQ</a></li>
+    </ul>
+  </div>
+
+  <div class="flex-grow-1 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold text-secondary mb-0">Produtos</h5>
+      <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalProduto" onclick="abrirModalCadastro()">
+        <i class="bi bi-plus-lg me-1"></i>Cadastrar Produto
+      </button>
+    </div>
+
+    <!-- Pesquisa -->
+<div class="card shadow-sm mb-3">
+  <div class="card-body py-2">
+    <div class="row g-2 align-items-center">
+      <div class="col-md-5">
+        <input type="text" id="campoPesquisa" class="form-control form-control-sm" placeholder="Pesquisar por nome ou ID...">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-sm btn-outline-danger w-100" onclick="pesquisarProduto()">
+          <i class="bi bi-search me-1"></i>Pesquisar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Tabela de Produtos -->
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-3">ID</th>
+              <th>Nome</th>
+              <th>Preço Unit.</th>
+              <th>Estoque</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                <i class="bi bi-box-seam fs-2 opacity-25"></i>
+                <div class="mt-2">Nenhum produto cadastrado</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cadastro/Edição de Produto -->
+<div class="modal fade" id="modalProduto" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h6 class="modal-title fw-bold"><i class="bi bi-box-seam me-2 text-danger"></i>Cadastrar Produto</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Nome do Produto <span class="text-danger">*</span></label>
+          <input type="text" id="nome" class="form-control" placeholder="Ex: Suco de Laranja">
+        </div>
+        <div class="row g-2">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Preço Unitário (R$) <span class="text-danger">*</span></label>
+            <input type="number" id="preco" class="form-control" step="0.01" min="0" placeholder="0,00">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Quantidade em Estoque <span class="text-danger">*</span></label>
+            <input type="number" id="quantidade" class="form-control" min="0" placeholder="0">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Estoque Mínimo (alerta)</label>
+          <input type="number" id="estoque_min" class="form-control" min="0" placeholder="Ex: 5">
+          <div class="form-text">Abaixo deste valor será emitido alerta de estoque baixo.</div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="salvarProduto()">
+            <i class="bi bi-floppy me-1"></i>Salvar
+          </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmação Exclusão -->
+<div class="modal fade" id="modalExcluir" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body text-center py-4">
+        <i class="bi bi-trash3 fs-2 text-danger"></i>
+        <p class="mt-3 mb-1 fw-semibold">Excluir produto?</p>
+        <p class="text-muted small">Esta ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger btn-sm">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/adminlte.min.js"></script>
+
+<script>
+  // Controla se estamos editando ou cadastrando
+  let idEditando = null
+
+  // Busca os produtos no servidor e monta a tabela
+  function carregarProdutos() {
+    fetch("http://localhost:5000/produtos")
+      .then(resposta => resposta.json())
+      .then(produtos => {
+
+        const tbody = document.querySelector("tbody")
+
+        if (produtos.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                Nenhum produto cadastrado
+              </td>
+            </tr>`
+          return
+        }
+
+        tbody.innerHTML = ""
+        produtos.forEach(produto => {
+          const status = produto.quantidade <= produto.estoque_min
+            ? `<span class="badge bg-danger">Baixo</span>`
+            : `<span class="badge bg-success">OK</span>`
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${produto.id}</td>
+              <td>${produto.nome}</td>
+              <td>R$ ${produto.preco.toFixed(2)}</td>
+              <td>${produto.quantidade}</td>
+              <td>${status}</td>
+              <td>
+                <button class="btn btn-sm btn-warning" onclick="editarProduto(${produto.id})">Editar</button>
+                <button class="btn btn-sm btn-danger" onclick="excluirProduto(${produto.id})">Excluir</button>
+              </td>
+            </tr>`
+        })
+      })
+  }
+
+  // Abre o modal para cadastrar
+  function abrirModalCadastro() {
+    idEditando = null
+    document.getElementById("nome").value        = ""
+    document.getElementById("preco").value       = ""
+    document.getElementById("quantidade").value  = ""
+    document.getElementById("estoque_min").value = ""
+    document.querySelector(".modal-title").innerHTML =
+      '<i class="bi bi-box-seam me-2 text-danger"></i>Cadastrar Produto'
+  }
+
+  // Salva — decide se cadastra ou atualiza
+  function salvarProduto() {
+    if (idEditando) {
+      atualizarProduto(idEditando)
+    } else {
+      cadastrarProduto()
+    }
+  }
+
+  // Cadastrar produto
+  function cadastrarProduto() {
+    const nome        = document.getElementById("nome").value
+    const preco       = document.getElementById("preco").value
+    const quantidade  = document.getElementById("quantidade").value
+    const estoque_min = document.getElementById("estoque_min").value
+
+    if (!nome || !preco) {
+      alert("Nome e preço são obrigatórios!")
+      return
+    }
+
+    fetch("http://localhost:5000/produtos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome, preco, quantidade, estoque_min })
+    })
+    .then(resposta => resposta.json())
+    .then(dados => {
+      alert(dados.mensagem)
+      carregarProdutos()
+    })
+  }
+
+  // Excluir produto
+  function excluirProduto(id) {
+    if (!confirm("Tem certeza que deseja excluir este produto?")) {
+      return
+    }
+
+    fetch(`http://localhost:5000/produtos/${id}`, {
+      method: "DELETE"
+    })
+    .then(resposta => resposta.json())
+    .then(dados => {
+      alert(dados.mensagem)
+      carregarProdutos()
+    })
+  }
+
+  // Editar produto
+  function editarProduto(id) {
+    fetch("http://localhost:5000/produtos")
+      .then(resposta => resposta.json())
+      .then(produtos => {
+        const produto = produtos.find(p => p.id === id)
+
+        idEditando = id
+        document.getElementById("nome").value        = produto.nome
+        document.getElementById("preco").value       = produto.preco
+        document.getElementById("quantidade").value  = produto.quantidade
+        document.getElementById("estoque_min").value = produto.estoque_min
+        document.querySelector(".modal-title").innerHTML =
+          '<i class="bi bi-box-seam me-2 text-danger"></i>Editar Produto'
+
+        const modal = new bootstrap.Modal(document.getElementById("modalProduto"))
+        modal.show()
+      })
+  }
+
+  // Atualizar produto
+  function atualizarProduto(id) {
+    const nome        = document.getElementById("nome").value
+    const preco       = document.getElementById("preco").value
+    const quantidade  = document.getElementById("quantidade").value
+    const estoque_min = document.getElementById("estoque_min").value
+
+    if (!nome || !preco) {
+      alert("Nome e preço são obrigatórios!")
+      return
+    }
+
+    fetch(`http://localhost:5000/produtos/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome, preco, quantidade, estoque_min })
+    })
+    .then(resposta => resposta.json())
+    .then(dados => {
+      alert(dados.mensagem)
+      carregarProdutos()
+    })
+  }
+
+  // Pesquisar produto por nome
+  function pesquisarProduto() {
+    const busca = document.getElementById("campoPesquisa").value.toLowerCase()
+
+    fetch("http://localhost:5000/produtos")
+      .then(resposta => resposta.json())
+      .then(produtos => {
+
+       // Filtra por nome OU por ID
+        const filtrados = produtos.filter(p =>
+          p.nome.toLowerCase().includes(busca) ||
+          p.id.toString().includes(busca)
+        )
+
+        const tbody = document.querySelector("tbody")
+
+        if (filtrados.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                Nenhum produto encontrado para "${busca}"
+              </td>
+            </tr>`
+          return
+        }
+
+        tbody.innerHTML = ""
+        filtrados.forEach(produto => {
+          const status = produto.quantidade <= produto.estoque_min
+            ? `<span class="badge bg-danger">Baixo</span>`
+            : `<span class="badge bg-success">OK</span>`
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${produto.id}</td>
+              <td>${produto.nome}</td>
+              <td>R$ ${produto.preco.toFixed(2)}</td>
+              <td>${produto.quantidade}</td>
+              <td>${status}</td>
+              <td>
+                <button class="btn btn-sm btn-warning" onclick="editarProduto(${produto.id})">Editar</button>
+                <button class="btn btn-sm btn-danger" onclick="excluirProduto(${produto.id})">Excluir</button>
+              </td>
+            </tr>`
+        })
+      })
+  }
+
+  // Chama a função quando a página carregar
+  carregarProdutos()
+</script>
+
+</body>
+</html>
